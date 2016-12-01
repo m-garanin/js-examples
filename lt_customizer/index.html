@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lower Third</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <style>
+      
+      .row + .row {
+        margin-top: 1rem;
+      }
+      
+      .canvas {
+        border: 1px solid #666;
+        display: block;
+        height: 200px;
+        margin: auto;
+        width: 1280px;
+      }
+      
+      .checkbox-font {
+        margin-top: 31px;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+	  <center>
+            <h1>Lower Third Customizer</h1>
+	  </center>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div id="canvas" class="canvas"></div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-md-offset-9 text-right">
+          <input type="file" id="input-image" accept="image/*">
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>First text</label>
+            <input type="text" class="form-control text" data-text="1" placeholder="Enter first text" value="First Line">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>Font family</label>
+            <select class="form-control select-font" data-text="1">
+              <option value="Tahoma">Tahoma</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Times New Roman">Times New Roman</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>Font size</label>
+            <input type="number" class="form-control font-size" data-text="1" min="8" max="150" value="50">
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>Color</label>
+            <input type="color" class="form-control font-color" data-text="1" value="#ff0000">
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <div class="checkbox checkbox-font">
+              <label>
+                <input type="checkbox" class="font-bold" data-text="1"> Bold
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <div class="checkbox checkbox-font">
+              <label>
+                <input type="checkbox" class="font-italic" data-text="1"> Italic
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Second text</label>
+            <input type="text" class="form-control text" data-text="2" placeholder="Enter second text" value="Second Line">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>Font family</label>
+            <select class="form-control select-font" data-text="2">
+              <option value="Tahoma">Tahoma</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Times New Roman">Times New Roman</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>Font size</label>
+            <input type="number" class="form-control font-size" data-text="2" min="8" max="150" value="50">
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>Color</label>
+            <input type="color" class="form-control font-color" data-text="2" value="#ff0000">
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <div class="checkbox checkbox-font">
+              <label>
+                <input type="checkbox" class="font-bold" data-text="2"> Bold
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <div class="checkbox checkbox-font">
+              <label>
+                <input type="checkbox" class="font-italic" data-text="2"> Italic
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row"></div>
+      
+      <div class="row">
+        <div class="col-md-3 col-md-offset-6">
+          <input type="text" class="form-control input-lg" id="archive_name" placeholder="Theme name">
+        </div>
+        <div class="col-md-3">
+          <button type="button" class="btn btn-success btn-lg btn-block" id="download">Download result</button>
+        </div>
+      </div>
+      
+      <center style="margin-top:50px;">
+	<a href="http://www.justbroadcaster.com">JustBroadcaster.com</a>
+      </center>
+    </div>
+    
+    <script src="konva.min.js"></script>
+    <script src="jszip.min.js"></script>
+    <script src="FileSaver.js"></script>
+    <script src="app.js"></script>
+    
+  </body>
+</html>
