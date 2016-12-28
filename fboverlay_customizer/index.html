@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>JustBroadcaster - video streaming software</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Style -->
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <style>
+            .row + .row {
+        margin-top: 1rem;
+      }
+      
+      .canvas {
+        border: 1px solid #777;
+        background: #3d3d3d;
+        display: block;
+        float: left;
+        height: 720px;
+        width: 1280px;
+      }
+      
+      .tooltip-type {
+        position: fixed;
+        padding: 5px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 3px;
+        color: #fff;
+        font-weight: 700;
+        display: none;
+      }
+      
+      .controls {
+        float: left;
+        margin-left: 15px;
+      }
+      
+      .controls .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
+        position: static;
+        vertical-align: sub;
+      }
+      
+      .checkbox-image {
+        width: 32px;
+      }
+
+
+     .upload-container{
+ 	    width: 62px;
+	    height: 30px;
+	    position: relative;
+	    overflow:hidden;
+	    margin: auto;
+	    }
+
+      .upload-container input{
+	    position: absolute;
+	    top: 0; left: 0;
+	    width: 225px;
+	    opacity: 0;
+	    padding: 14px 0;
+	    cursor: pointer;
+	    }
+	    
+       .layer {
+	    border: 1px solid #666;
+            background: #fff;
+	    padding: 5px;
+	    margin-top: -1px;
+	    }
+	    
+       .layer-delete {
+	    float: left;
+	    margin-top: 12px;
+	    margin-right: 5px;
+	    }
+	    
+       .layer-prev-wrap {
+	    overflow: hidden;
+	    }
+	    
+      .layer-prev {
+	    height: 40px;
+	    }
+	    
+      
+    </style>
+
+
+</head>
+<body>
+	<header class="navbar navbar-inverse navbar-fixed-top" role="banner">
+	  <div class="container">
+	    <div class="navbar-header">
+	      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a href="/" class="navbar-brand scroller" style="font-size:24px;">
+		JustBroadcaster : FV Overlay Customizer
+	      </a>
+	    </div>
+	    
+	    <div style="float:right;width:300px;margin-top:8px;">
+	      <input type="text" class="form-control"
+		     style="width:200px;float:left;"
+		     id="archive_name" placeholder="Enter theme name">
+	      <button type="button"
+		      style="float:right;"
+		      class="btn btn-default" id="download">
+		Download
+	      </button>
+	    </div>
+	    
+	    
+	  </div>
+	</header>
+
+	<section>
+          <div class="container-fluid">
+	    
+	    <div class="row" style="margin-top:55px;">
+	      <div class="col-md-12">
+		    <div id="canvas" class="canvas"></div>
+		    <div class="tooltip-type">123</div>
+
+		    <div class="controls">
+
+		      <div class="form-group">
+			<div class="checkbox checkbox-font">
+			  <label>
+			    <input type="checkbox" class="LIKE"> <img src="img/FB_LIKE.png" class="checkbox-image ">
+			  </label>
+			</div>
+		      </div>
+		      
+		      <div class="form-group">
+			<div class="checkbox checkbox-font">
+			  <label>
+			    <input type="checkbox" class="LOVE"> <img src="img/FB_LOVE.png" class="checkbox-image ">
+			  </label>
+			</div>
+		      </div>
+
+		      <div class="form-group">
+			<div class="checkbox checkbox-font">
+			  <label>
+			    <input type="checkbox" class="HAHA"> <img src="img/FB_HAHA.png" class="checkbox-image ">
+			  </label>
+			</div>
+		      </div>
+
+		      <div class="form-group">
+			<div class="checkbox checkbox-font">
+			  <label>
+			    <input type="checkbox" class="WOW"> <img src="img/FB_WOW.png" class="checkbox-image ">
+			  </label>
+			</div>
+		      </div>
+
+		      <div class="form-group">
+			<div class="checkbox checkbox-font">
+			  <label>
+			    <input type="checkbox" class="SAD"> <img src="img/FB_SAD.png" class="checkbox-image ">
+			  </label>
+			</div>
+		      </div>
+		      
+		      
+		      <div class="form-group">
+			<div class="checkbox checkbox-font">
+			  <label>
+			    <input type="checkbox" class="ANGRY"> <img src="img/FB_ANGRY.png" class="checkbox-image ">
+			  </label>
+			</div>
+		      </div>
+
+		      
+		      
+		      <div class="form-group">
+			<label>Font size</label>
+			<input type="number" class="form-control font-size" data-text="1" min="8" max="150" value="35">
+		      </div>
+
+		      <div class="form-group">
+			<div class="checkbox checkbox-font">
+			  <label>
+			    <input type="checkbox" class="font-bold" data-text="1"> Bold
+			  </label>
+			</div>
+		      </div>
+
+		      <div class="form-group text-center">
+			
+			<label>Add images:</label>
+			<div class="upload-container">
+			  <button class="btn btn-sm"
+				  style="padding:2px 10px 2px 10px;border-radius:2px;">
+			   +
+			  </button>
+			  <input type="file" id="input-image" accept="image/*">
+			</div>
+
+		      </div>
+		      <div class="layers-list"></div>
+		    </div>
+
+
+		    
+
+		    
+	      </div>
+
+
+	      
+	    </div>
+	    
+	      
+            </div>
+          </div>
+	</section>
+	
+
+
+    <script src="js/lib/konva.js"></script>
+    <script src="js/lib/jszip.js"></script>
+    <script src="js/lib/filesaver.js"></script>
+    <script src="js/lib/sortable.js"></script>
+
+    <script src="js/app.js?v=4"></script>
+
+</body>
+</html>
