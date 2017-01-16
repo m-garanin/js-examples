@@ -10,6 +10,8 @@ var main = {
   }
   , colors: ['red', 'lime', 'blue']
   , slots: {}
+  , level: 'min'
+  , levels: {}
 
   , stage: null
   , layer: null
@@ -94,14 +96,10 @@ var main = {
     group.add(figure);
 
     if (shape == 'rect') {
-//      if (dim == 'free') {
-        this.addAnchor(group, -4, -4, 'topLeft', name);
-        this.addAnchor(group, figure.getAttr('width'), 0, 'topRight', name);
-        this.addAnchor(group, figure.getAttr('width'), figure.getAttr('height'), 'bottomRight', name);
-        this.addAnchor(group, 0, figure.getAttr('height'), 'bottomLeft', name);
-//      } else {
-//        this.addAnchor(group, figure.getAttr('width'), figure.getAttr('height'), 'bottomRight', name);
-//      }
+      this.addAnchor(group, -4, -4, 'topLeft', name);
+      this.addAnchor(group, figure.getAttr('width'), 0, 'topRight', name);
+      this.addAnchor(group, figure.getAttr('width'), figure.getAttr('height'), 'bottomRight', name);
+      this.addAnchor(group, 0, figure.getAttr('height'), 'bottomLeft', name);
     } else if (shape == 'circle') {
       this.addAnchor(group, figure.radius(), 0, 'rightMiddle', name);
     } else {
@@ -115,7 +113,8 @@ var main = {
     this.slots[name] = {
       slot: figure,
       index: figure.getAbsoluteZIndex(),
-      color: Konva.Util.getRGB(figure.getFill())
+      color: figure.getFill(),
+      level: this.level
     };
   }
 
@@ -344,6 +343,9 @@ var main = {
     zip.file('scene_slots.png', imageData2.substr(imageData2.indexOf(',') + 1), {base64: true});
     var imageSlotsData = this.getData();
 
+    var c = this.layer.getCanvas();
+    var ctx = c.getContext();
+
     for (var slot_name in this.slots) {
       var slot = this.slots[slot_name].slot;
       console.log('Slot', slot_name, slot);
@@ -362,7 +364,8 @@ var main = {
           break;
       }
       stage.draw();
-      this.slots[slot_name]['data'] = this.getData();
+
+      this.slots[slot_name]['data'] = ctx.getImageData(0, 0, this.stage.getWidth(), this.stage.getHeight());;
     }
     
     // прячем скрытые рамки
@@ -391,21 +394,32 @@ var main = {
       zip.file(slot_name + '.png', imageData.substr(imageData.indexOf(',') + 1), {base64: true});
     }
 
-    /* for (var slot_name in this.slots) {
-     *   console.log('Slot', slot_name);
-     *   var slot_data = this.slots[slot_name].data;
-     *   var c2 = layer.getCanvas();
-     *   var ctx2 = c2.getContext();
-     *   ctx2.putImageData(slot_data, 0, 0);
-     *   ctx.drawImage(c2, 0, 0);
-     * }
-     * var imageData3 = c.toDataURL({pixelRatio: 1});
-     * zip.file('scene.png', imageData3.substr(imageData3.indexOf(',') + 1), {base64: true});*/
+    for (var slot_name in this.slots) {
+      console.log('Slot', slot_name);
+      var slot_data = this.slots[slot_name].data;
+      var c2 = this.layer.getCanvas();
+      var ctx2 = c2.getContext();
+      ctx2.putImageData(slot_data, 0, 0);
+      ctx.drawImage(c2._canvas, 0, 0);
+      ctx.globalCompositeOperation = 'lighter';
+    }
+    var imageData3 = c.toDataURL({pixelRatio: 1});
+    zip.file('scene.png', imageData3.substr(imageData3.indexOf(',') + 1), {base64: true});
 
+    var self = this;
     zip.generateAsync({type: 'blob'}).then(function(content) {
       saveAs(content, name + '.zip');
 
-      actAnchors('show');
+      // возвращаем фигуры
+      for (var slot_name in self.slots) {
+        var slot = self.slots[slot_name].slot;
+        slot.show();
+        slot.strokeEnabled(true);
+        slot.shadowEnabled(true);
+        slot.setFill(self.slots[slot_name].color);
+        self.layer.draw();
+      }
+      self.actAnchors('show');
     });
   }
 
