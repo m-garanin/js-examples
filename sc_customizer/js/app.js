@@ -15,6 +15,8 @@ var main = {
 
   , stage: null
   , layer: null
+  , canvas: null
+  , context: null
 
   , makeShape: function(name, shape, dim) {
     console.log('params', shape, dim);
@@ -247,17 +249,17 @@ var main = {
     var stage = group.getStage();
     var layer = group.getLayer();
 
-    var anchor = new Konva.Rect({
+    var anchor = new Konva.Circle({
       x: x,
       y: y,
       stroke: '#666',
       fill: 'white',
       strokeWidth: 2,
-      width: 8,
-      height: 8,
+      radius: 8,
       name: name,
       draggable: true,
-      dragOnTop: false
+      dragOnTop: false,
+      //visible: false
     });
 
     var self = this;
@@ -303,9 +305,7 @@ var main = {
 
   , getData: function() {
     // Получаем пиксели картинки
-    var c = this.layer.getCanvas();
-    var ctx = c.getContext();
-    return ctx.getImageData(0, 0, this.stage.getWidth(), this.stage.getHeight());
+    return this.context.getImageData(0, 0, this.stage.getWidth(), this.stage.getHeight());
   }
 
   , download: function() {
@@ -343,9 +343,6 @@ var main = {
     zip.file('scene_slots.png', imageData2.substr(imageData2.indexOf(',') + 1), {base64: true});
     var imageSlotsData = this.getData();
 
-    var c = this.layer.getCanvas();
-    var ctx = c.getContext();
-
     for (var slot_name in this.slots) {
       var slot = this.slots[slot_name].slot;
       console.log('Slot', slot_name, slot);
@@ -365,7 +362,8 @@ var main = {
       }
       stage.draw();
 
-      this.slots[slot_name]['data'] = ctx.getImageData(0, 0, this.stage.getWidth(), this.stage.getHeight());;
+      var slot_data = this.context.getImageData(0, 0, this.stage.getWidth(), this.stage.getHeight());
+      this.slots[slot_name]['data'] = slot_data;
     }
     
     // прячем скрытые рамки
@@ -384,26 +382,24 @@ var main = {
       }
     }
 
-    var c = layer.getCanvas();
-    var ctx = c.getContext(); 
+    // сохраняем картинки для теста
     for (var slot_name in this.slots) {
-      console.log('Slot', slot_name);
       var slot_data = this.slots[slot_name].data;
-      ctx.putImageData(slot_data, 0, 0);
-      var imageData = c.toDataURL({pixelRatio: 1});
+      this.context.putImageData(slot_data, 0, 0);
+      var imageData = this.canvas.toDataURL({pixelRatio: 1});
       zip.file(slot_name + '.png', imageData.substr(imageData.indexOf(',') + 1), {base64: true});
     }
-
+    
     for (var slot_name in this.slots) {
-      console.log('Slot', slot_name);
+      console.log('Slot', this.slots[slot_name]);
       var slot_data = this.slots[slot_name].data;
-      var c2 = this.layer.getCanvas();
-      var ctx2 = c2.getContext();
+      var c2 = layer.getCanvas()._canvas;
+      var ctx2 = c2.getContext('2d');
       ctx2.putImageData(slot_data, 0, 0);
-      ctx.drawImage(c2._canvas, 0, 0);
-      ctx.globalCompositeOperation = 'lighter';
+      this.context.drawImage(c2, 0, 0);
     }
-    var imageData3 = c.toDataURL({pixelRatio: 1});
+    stage.draw();
+    var imageData3 = stage.toDataURL({pixelRatio: 1});
     zip.file('scene.png', imageData3.substr(imageData3.indexOf(',') + 1), {base64: true});
 
     var self = this;
@@ -411,15 +407,15 @@ var main = {
       saveAs(content, name + '.zip');
 
       // возвращаем фигуры
-      for (var slot_name in self.slots) {
-        var slot = self.slots[slot_name].slot;
-        slot.show();
-        slot.strokeEnabled(true);
-        slot.shadowEnabled(true);
-        slot.setFill(self.slots[slot_name].color);
-        self.layer.draw();
-      }
-      self.actAnchors('show');
+      /* for (var slot_name in self.slots) {
+       *   var slot = self.slots[slot_name].slot;
+       *   slot.show();
+       *   slot.strokeEnabled(true);
+       *   slot.shadowEnabled(true);
+       *   slot.setFill(self.slots[slot_name].color);
+       *   self.layer.draw();
+       * }
+       * self.actAnchors('show');*/
     });
   }
 
@@ -436,6 +432,9 @@ var main = {
     // создаём слой
     this.layer = new Konva.Layer();
 
+    this.canvas = this.layer.getCanvas()._canvas;
+    this.context = this.canvas.getContext('2d');
+    
     // вешаем на селекторы монитор событий
     var slot_names = document.querySelectorAll('#slot1, #slot2, #slot3');
     [].map.call(slot_names, function(slot) {
