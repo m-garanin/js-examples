@@ -10,16 +10,11 @@ var main = {
   }
   , colors: ['red', 'lime', 'blue']
   , slots: {}
-  , level: 'min'
-  , levels: {}
 
   , stage: null
   , layer: null
-  , canvas: null
-  , context: null
 
   , makeShape: function(name, shape, dim) {
-    console.log('params', shape, dim);
     // проверяем если есть фигура с именем name и удаляем её
     var figures = this.stage.find('.' + name);
     if (figures.length) {
@@ -33,11 +28,11 @@ var main = {
     var width,
         height;
     if (dim == 'free') {
-      width = Math.random() * 600;
-      height = Math.random() * 600;
+      width = Math.random() * (600 - 100) + 100;;
+      height = Math.random() * (500 - 70) + 70;
     } else {
       var pr = dim.split('x');
-      width = Math.random() * 600;
+      width = Math.random() * (600 - 100) + 100;
       height = width / pr[0] * pr[1]
     }
 
@@ -47,26 +42,12 @@ var main = {
       figure = new Konva.Rect({
         width: width,
         height: height,
-        fill: color,
-        stroke: 'white',
-        strokeWidth: 1,
-        shadowColor: 'black',
-        shadowBlur: 10,
-        shadowOffset: {x : 10, y : 10},
-        shadowOpacity: 0.5,
         prop: dim,
         name: name
       });
     } else if (shape == 'circle') {
       figure = new Konva.Circle({
         radius: (width + height) / 3,
-        fill: color,
-        stroke: 'white',
-        strokeWidth: 1,
-        shadowColor: 'black',
-        shadowBlur: 10,
-        shadowOffset: {x : 10, y : 10},
-        shadowOpacity: 0.5,
         name: name
       });    
     } else {
@@ -76,16 +57,19 @@ var main = {
           x: x,
           y: x / 16 * 9
         },
-        fill: color,
-        stroke: 'white',
-        strokeWidth: 1,
-        shadowColor: 'black',
-        shadowBlur: 10,
-        shadowOffset: {x : 10, y : 10},
-        shadowOpacity: 0.5,
         name: name
       });
     }
+    var attrs = {
+      fill: color,
+      stroke: 'white',
+      strokeWidth: 2,
+      shadowColor: 'black',
+      shadowBlur: 10,
+      shadowOffset: {x : 5, y : 5},
+      shadowOpacity: 0.5      
+    }
+    figure.setAttrs(attrs);
 
     // добавляем фигуру в группу
     var group = new Konva.Group({
@@ -97,11 +81,15 @@ var main = {
     this.layer.add(group);
     group.add(figure);
 
+    var hide;
     if (shape == 'rect') {
-      this.addAnchor(group, -4, -4, 'topLeft', name);
-      this.addAnchor(group, figure.getAttr('width'), 0, 'topRight', name);
+      if (dim != 'free') {
+        hide = true;
+      }
+      this.addAnchor(group, -4, -4, 'topLeft', name, hide);
+      this.addAnchor(group, figure.getAttr('width'), 0, 'topRight', name, hide);
+      this.addAnchor(group, 0, figure.getAttr('height'), 'bottomLeft', name, hide);
       this.addAnchor(group, figure.getAttr('width'), figure.getAttr('height'), 'bottomRight', name);
-      this.addAnchor(group, 0, figure.getAttr('height'), 'bottomLeft', name);
     } else if (shape == 'circle') {
       this.addAnchor(group, figure.radius(), 0, 'rightMiddle', name);
     } else {
@@ -114,9 +102,7 @@ var main = {
 
     this.slots[name] = {
       slot: figure,
-      index: figure.getAbsoluteZIndex(),
-      color: figure.getFill(),
-      level: this.level
+      color: figure.getFill()
     };
   }
 
@@ -126,7 +112,6 @@ var main = {
       var figure = figures[0];
       var group = figure.getParent();
       group.moveToTop();
-      this.slots[figure.getName()].index = figure.getAbsoluteZIndex(); 
       this.layer.draw();
     }
   }
@@ -146,7 +131,11 @@ var main = {
                 child.hide();
                 break;
               case 'show':
-                child.show();
+                var dim = s[0].getAttr('prop');
+                if (dim == 'free' || child.getName() == 'bottomRight'
+                    || s[0].className == 'Circle' || s[0].className == 'Ellipse') {
+                  child.show();
+                }
                 break;
             }
           }
@@ -162,14 +151,14 @@ var main = {
     var figureName = figure.getClassName();
     
     if (figureName == 'Rect') {
-      var topLeft = group.get('.topLeft')[0];
-      var topRight = group.get('.topRight')[0];
-      var bottomLeft = group.get('.bottomLeft')[0];
-      var bottomRight = group.get('.bottomRight')[0];
       var dim = figure.getAttr('prop');
       if (dim != 'free') {
         var pr = dim.split('x');
       }
+      var topLeft = group.get('.topLeft')[0];
+      var topRight = group.get('.topRight')[0];
+      var bottomLeft = group.get('.bottomLeft')[0];
+      var bottomRight = group.get('.bottomRight')[0];
     } else if (figureName == 'Circle') {
       var rightMiddle = group.get('.rightMiddle')[0];
     } else {
@@ -245,7 +234,7 @@ var main = {
     }
   }
 
-  , addAnchor: function(group, x, y, name, fname) {
+  , addAnchor: function(group, x, y, name, fname, hide) {
     var stage = group.getStage();
     var layer = group.getLayer();
 
@@ -261,6 +250,9 @@ var main = {
       dragOnTop: false,
       //visible: false
     });
+    if (hide) {
+      anchor.hide();
+    }
 
     var self = this;
     anchor.on('dragmove', function() {
@@ -292,25 +284,7 @@ var main = {
     group.add(anchor);
   }
 
-  , hideNeibours: function(n1, n2) {
-    var slot1 = this.layer.find('.slot' + n1);
-    if (slot1.length) {
-      slot1[0].hide();
-    }
-    var slot2 = this.layer.find('.slot' + n2);
-    if (slot2.length) {
-      slot2[0].hide();
-    }
-  }
-
-  , getData: function() {
-    // Получаем пиксели картинки
-    return this.context.getImageData(0, 0, this.stage.getWidth(), this.stage.getHeight());
-  }
-
   , download: function() {
-    console.log('this', this);
-
     var name = document.querySelector('#archive_name').value;
     if (!name) {
       alert('Please, enter archive name!');
@@ -319,6 +293,9 @@ var main = {
 
     var stage = this.stage;
     var layer = this.layer;
+
+    var c = layer.getCanvas()._canvas;
+    var ctx = c.getContext('2d');
     
     this.actAnchors('hide');
 
@@ -335,70 +312,39 @@ var main = {
     // чистим фигуры
     for (var slot_name in this.slots) {
       var slot = this.slots[slot_name].slot;
-      slot.strokeEnabled(false);
+      //slot.strokeEnabled(false);
       slot.shadowEnabled(false);
     }
     stage.draw();
     var imageData2 = stage.toDataURL({pixelRatio: 1});
     zip.file('scene_slots.png', imageData2.substr(imageData2.indexOf(',') + 1), {base64: true});
-    var imageSlotsData = this.getData();
+    var imageSlotsData = ctx.getImageData(0, 0, stage.getWidth(), stage.getHeight());
 
     for (var slot_name in this.slots) {
       var slot = this.slots[slot_name].slot;
-      console.log('Slot', slot_name, slot);
-      slot.strokeEnabled(true);
+      //slot.strokeEnabled(true);
       slot.setFill(null);
-      slot.show();
-      switch (slot_name) {
-        case 'slot1':
-          this.hideNeibours(2, 3);
-          break;
-        case 'slot2':
-          this.hideNeibours(1, 3);
-          break;
-        case 'slot3':
-          this.hideNeibours(1, 2);
-          break;
-      }
-      stage.draw();
-
-      var slot_data = this.context.getImageData(0, 0, this.stage.getWidth(), this.stage.getHeight());
-      this.slots[slot_name]['data'] = slot_data;
+      slot.shadowEnabled(true);
     }
+    stage.draw()
+
+    // холст только с рамками и тенями от них
+    var imageStrokesData = ctx.getImageData(0, 0, stage.getWidth(), stage.getHeight());
     
-    // прячем скрытые рамки
+    // прячем скрытые рамки и тени
     var data = imageSlotsData.data;
     for(var i=0; i<data.length; i+=4) {
       if ((data[i] == 255 && data[i+1] == 0 && data[i+2] == 0)
           || (data[i] == 0 && data[i+1] == 255 && data[i+2] == 0)
           || (data[i] == 0 && data[i+1] == 0 && data[i+2] == 255)) {
         // Основная работа
-        if (data[i] == 0 && data[i+1] == 255 && data[i+2] == 0) {
-          this.slots['slot1'].data.data[i+3] = 0;
-        } else if (data[i] == 0 && data[i+1] == 0 && data[i+2] == 255) {
-          this.slots['slot1'].data.data[i+3] = 0;
-          this.slots['slot2'].data.data[i+3] = 0;
-        }
+        imageStrokesData.data[i+3] = 0;
       }
     }
 
-    // сохраняем картинки для теста
-    for (var slot_name in this.slots) {
-      var slot_data = this.slots[slot_name].data;
-      this.context.putImageData(slot_data, 0, 0);
-      var imageData = this.canvas.toDataURL({pixelRatio: 1});
-      zip.file(slot_name + '.png', imageData.substr(imageData.indexOf(',') + 1), {base64: true});
-    }
+    this.data = imageStrokesData;
+    ctx.putImageData(imageStrokesData, 0, 0);
     
-    for (var slot_name in this.slots) {
-      console.log('Slot', this.slots[slot_name]);
-      var slot_data = this.slots[slot_name].data;
-      var c2 = layer.getCanvas()._canvas;
-      var ctx2 = c2.getContext('2d');
-      ctx2.putImageData(slot_data, 0, 0);
-      this.context.drawImage(c2, 0, 0);
-    }
-    stage.draw();
     var imageData3 = stage.toDataURL({pixelRatio: 1});
     zip.file('scene.png', imageData3.substr(imageData3.indexOf(',') + 1), {base64: true});
 
@@ -407,15 +353,15 @@ var main = {
       saveAs(content, name + '.zip');
 
       // возвращаем фигуры
-      /* for (var slot_name in self.slots) {
-       *   var slot = self.slots[slot_name].slot;
-       *   slot.show();
-       *   slot.strokeEnabled(true);
-       *   slot.shadowEnabled(true);
-       *   slot.setFill(self.slots[slot_name].color);
-       *   self.layer.draw();
-       * }
-       * self.actAnchors('show');*/
+      for (var slot_name in self.slots) {
+        var slot = self.slots[slot_name].slot;
+        slot.show();
+        slot.strokeEnabled(true);
+        slot.shadowEnabled(true);
+        slot.setFill(self.slots[slot_name].color);
+        self.layer.draw();
+      }
+      self.actAnchors('show');
     });
   }
 
@@ -431,15 +377,11 @@ var main = {
 
     // создаём слой
     this.layer = new Konva.Layer();
-
-    this.canvas = this.layer.getCanvas()._canvas;
-    this.context = this.canvas.getContext('2d');
     
     // вешаем на селекторы монитор событий
     var slot_names = document.querySelectorAll('#slot1, #slot2, #slot3');
     [].map.call(slot_names, function(slot) {
       slot.addEventListener('change', function() {
-        console.log('changed', this.id);
         var sIndex = this.options['selectedIndex'];
         if (sIndex != 0) {
           var val = this.options[sIndex].value;
@@ -471,7 +413,6 @@ var main = {
     });
 
     var imageObj = new Image();
-    imageObj.crossOrigin = 'anonymous';
     imageObj.onload = function() {
       var bkgrnd = new Konva.Image({
         x: 0,
@@ -487,6 +428,9 @@ var main = {
     }
     // http://stackoverflow.com/questions/24440212/kineticjs-kinetic-warning-unable-to-get-data-url
     // imageObj.src = './img/background.png';
+    // Если скрипт работает через сервер, раскомментируйте строку выше
+    // и закомментируйте две строки ниже
+    imageObj.crossOrigin = 'anonymous';
     imageObj.src = 'https://dl.dropboxusercontent.com/u/65129102/background.png';
 
     // событие скачать архив
