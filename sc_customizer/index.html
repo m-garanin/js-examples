@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lower Third</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <style>
+      
+     .row + .row {
+         margin-top: 1rem;
+     }
+
+     .top-widgets {
+         display: block;
+         margin: auto;
+         margin-top: 20px;
+         width: 1280px;
+         height: 40px;
+     }
+
+     .container-btns {
+         display: block;
+         margin: auto;
+         margin-top: 20px;
+         width: 1280px;
+         height: 40px;         
+     }
+      
+     .canvas {
+        border: 1px solid #666;
+        display: block;
+        height: 720px;
+        margin: auto;
+        width: 1280px;
+     }
+
+     .glyphicon {
+         cursor: pointer;
+         cursor: hand;
+     }
+      
+    </style>
+  </head>
+  <body>
+
+      <div class="container-fluid">
+          <div class="row top-widgets">
+              <form class="form-inline">
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label>Slot 1:</label>
+                          <select class="form-control" id="slot1">
+                              <option selected value="0"> ---- </option>
+                              <option value="1">rect(16:9)</option>
+                              <option value="2">rect(4:3)</option>
+                              <option value="3">rect(1:1)</option>
+                              <option value="4">rect(free)</option>
+                              <option value="5">ellipse(16:9)</option>
+                              <option value="6">circle(free)</option>
+                          </select>
+                          <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" onClick="main.setToTop('slot1')"></span>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label>Slot 2:</label>
+                          <select class="form-control" id="slot2">
+                              <option selected value="0"> ---- </option>
+                              <option value="1">rect(16:9)</option>
+                              <option value="2">rect(4:3)</option>
+                              <option value="3">rect(1:1)</option>
+                              <option value="4">rect(free)</option>
+                              <option value="5">ellipse(16:9)</option>
+                              <option value="6">circle(free)</option>
+                          </select>
+                          <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" onClick="main.setToTop('slot2')"></span>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label>Slot 3:</label>
+                          <select class="form-control" id="slot3">
+                              <option selected value="0"> ---- </option>
+                              <option value="1">rect(16:9)</option>
+                              <option value="2">rect(4:3)</option>
+                              <option value="3">rect(1:1)</option>
+                              <option value="4">rect(free)</option>
+                              <option value="5">ellipse(16:9)</option>
+                              <option value="6">circle(free)</option>
+                          </select>
+                          <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" onClick="main.setToTop('slot3')"></span>
+                      </div>
+                  </div>
+              </form>
+          </div>
+
+          <div class="row">
+              <div class="col-md-12">
+                  <div id="canvas" class="canvas"></div>
+              </div>
+          </div>
+      </div>
+      
+      <div class="container-btns">
+          <div class="row">
+              <div class="col-md-4">
+                  <input type="text" class="form-control input-lg" id="archive_name" placeholder="Theme name">
+              </div>
+              <div class="col-md-4">
+                  <button type="button" class="btn btn-success btn-lg btn-block" id="download">Download result</button>
+              </div>
+              <div class="col-md-4">
+                  <button type="button" class="btn btn-info btn-lg btn-block" id="show">Show result</button>
+              </div>
+          </div>
+          
+          <center style="margin-top:50px;">
+	      <a href="http://www.justbroadcaster.com">JustBroadcaster.com</a>
+          </center>
+      </div>
+      
+      <script src="./js/konva.min.js"></script>
+      <script src="./js/jszip.min.js"></script>
+      <script src="./js/FileSaver.js"></script>
+      <script src="./js/app.js"></script>
+      
+  </body>
+</html>
