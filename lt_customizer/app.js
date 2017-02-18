@@ -172,6 +172,26 @@
     
   });
 
+document.querySelector('#download2').addEventListener('click', function() {
+  var name = document.querySelector('#archive_name').value;
+  if(!name) return alert('Enter name of theme');
+
+  var imageData = stage.toDataURL({pixelRatio:1});
+  
+  // создаем json файл
+  var data = {
+    scene: imageData
+  };
+  var json = JSON.stringify(data);
+  var blob = new Blob([json], {type: "application/json"});
+  var url  = URL.createObjectURL(blob);
+
+  var link = document.createElement('a');
+  link.download = "lt_" + name + ".json";
+  link.href = url;
+  link.click();
+});
+
 function init(){
     applyTextProps(1);
     applyTextProps(2);
