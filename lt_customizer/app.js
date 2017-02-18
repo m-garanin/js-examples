@@ -177,7 +177,7 @@ document.querySelector('#download2').addEventListener('click', function() {
   if(!name) return alert('Enter name of theme');
 
   var imageData = stage.toDataURL({pixelRatio:1});
-  
+
   // создаем json файл
   var data = {
     scene: imageData

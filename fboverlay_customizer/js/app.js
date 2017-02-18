@@ -119,6 +119,16 @@
     stage.draw();
     
   });
+
+document.querySelector('.font-color').addEventListener('input', function() {
+  var color = this.value;
+  for(var text in texts) {
+    var elem = texts[text];
+    elem.setFill(color);    
+  }
+  
+  stage.draw();
+});
   
   document.querySelector('.font-bold').addEventListener('change', function() {
     
@@ -388,5 +398,25 @@
     });
     
   });
+
+document.querySelector('#download2').addEventListener('click', function() {
+  var name = document.querySelector('#archive_name').value;
+  if(!name) return alert('Enter name of theme');
   
+  var imageData = stage.toDataURL({pixelRatio:1});
+  
+  // создаем json файл
+  var data = {
+    scene: imageData
+  };
+  var json = JSON.stringify(data);
+  var blob = new Blob([json], {type: "application/json"});
+  var url  = URL.createObjectURL(blob);
+
+  var link = document.createElement('a');
+  link.download = "fbo_" + name + ".json";
+  link.href = url;
+  link.click();
+});
+
 //})();
