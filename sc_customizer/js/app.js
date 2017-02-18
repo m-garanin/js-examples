@@ -109,7 +109,8 @@ var main = {
     } else if (shape == 'circle') {
       this.addAnchor(group, figure.radius(), 0, 'rightMiddle', name);
     } else if (shape == 'trapeze') {
-      //this.addAnchor(group, 690, 430, 'bottomRightT', name);
+      this.addAnchor(group, 690, 430, 'bottomRightT', name);
+      //this.addAnchor(group, 50, 410, 'bottomLeftT', name);
     } else {
       this.addAnchor(group, figure.radiusX(), 0, 'rightMiddleE', name);
       this.addAnchor(group, 0, figure.radiusY(), 'bottomMiddle', name);
@@ -134,22 +135,34 @@ var main = {
     this.fillPattern(figure);
   }
 
-  , fillPattern: function(figure) {
+  , customFigure: function(figure, w, h) {
+    figure.sceneFunc(function(context) {
+      context.beginPath();
+      context.moveTo(50, 70);
+      context.lineTo(w + 50, 50);
+      context.lineTo(w + 50, h + 70);
+      context.lineTo(50, h + 50);
+      context.lineTo(50, 70);
+      context.closePath();
+      context.fillStrokeShape(figure);
+    });
+
+    this.fillPattern(figure, w, h);
+  }
+
+  , fillPattern: function(figure, w, h) {
     var self = this;
     var name = figure.getName();
     var imageNumber = name.match(/\d+/)[0];
     var shape = figure.getClassName();
     
-    var w = figure.width();
-    var h = figure.height();
+    var w = w || figure.width();
+    var h = h || figure.height();
     var imageScale = 0;
     if (shape == 'Shape') {
-      imageScale = 410 * 100 / 720 / 100;
-    } else if (w < h && figure.prop != 'free') {
-      imageScale = 100 / 1280 * w / 100;
-    } else {
-      imageScale = 100 / 720 * h / 100;
+      var h = h || 410;
     }
+    imageScale = 100 / 720 * h / 100;
 
     // добавляем картинку заполнитель
     var imageObj = new Image();
@@ -291,6 +304,7 @@ var main = {
         rightMiddleE.setX(anchorY / 9 * 16);
         break;
       case 'bottomRightT':
+      case 'bottomLeftT':
         break;
     }
 
@@ -318,7 +332,8 @@ var main = {
         figure.setRadiusY(anchorX / 16 * 9);
       }
     } else {
-      this.drawTrapeze(figure, anchorX, anchorY);
+      //console.log('Coordinate', anchorX, anchorY);
+      this.customFigure(figure, anchorX-50, anchorY-70);
     }
     
     this.fillPattern(figure);
