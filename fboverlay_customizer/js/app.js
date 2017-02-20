@@ -402,12 +402,43 @@ document.querySelector('.font-color').addEventListener('input', function() {
 document.querySelector('#download2').addEventListener('click', function() {
   var name = document.querySelector('#archive_name').value;
   if(!name) return alert('Enter name of theme');
+
+  // создаем объект для сохранения свойст текстовых элементов
+  var textProps = {};
+  
+  var bold = document.querySelector('.font-bold').checked;
+  var size = document.querySelector('.font-size').value;
+  
+  for(var text in texts) {
+    
+    if(!document.querySelector('.' + text).checked) continue;
+    
+    var textBlock = {
+      "color": "#000",
+      "font-family": "Arial",
+      "font-size": parseInt(size),
+      "italic": false,
+      "bold": bold
+    };
+    
+    textBlock.x = texts[text].x();
+    textBlock.y = texts[text].y();
+    
+    textProps[text] = textBlock;
+    
+  }
+  
+  // получаем изображение с канваса
+  for(var text in texts) texts[text].hide();
+  
+  stage.draw();
   
   var imageData = stage.toDataURL({pixelRatio:1});
   
   // создаем json файл
   var data = {
-    scene: imageData
+    'settings.json': JSON.stringify(textProps), 
+    'background.png': imageData
   };
   var json = JSON.stringify(data);
   var blob = new Blob([json], {type: "application/json"});
@@ -417,6 +448,10 @@ document.querySelector('#download2').addEventListener('click', function() {
   link.download = "fbo_" + name + ".json";
   link.href = url;
   link.click();
+
+  for(var text in texts) if(document.querySelector('.' + text).checked) texts[text].show();
+  
+  stage.draw();
 });
 
 //})();
