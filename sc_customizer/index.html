@@ -45,10 +45,65 @@
   </head>
   <body>
 
+      <!-- Modal -->
+      <div class="modal fade" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="optionsModalLabel">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="optionsModalLabel">Опции фигуры</h4>
+                  </div>
+                  <div class="modal-body">
+                      <div class="row">
+                          <div class="col-md-12">
+                              <label>Ширина бордюра:</label>
+                              <input type="range" min="1" max="20" value="2" oninput="main.setupOptions('strokeWidth', this.value)">
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-6">
+                              <label>Цвет бордюра:</label>
+                              <input type="color" value="#ffffff" oninput="main.setupOptions('stroke', this.value)">
+                          </div>
+                          <div class="col-md-6">
+                              <label>Цвет тени:</label>
+                              <input type="color" value="#000000" oninput="main.setupOptions('shadowColor', this.value)">
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-12">
+                              <label>Размывание тени:</label>
+                              <input type="range" min="1" max="20" value="10" oninput="main.setupOptions('shadowBlur', this.value)">
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-12">
+                              <label>Прозрачность тени:</label>
+                              <input type="range" min="0" max="1" step="0.1" value="0.5" oninput="main.setupOptions('shadowOpacity', this.value)">
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-6">
+                              <label>Сдвиг тени по X:</label>
+                              <input type="range" min="0" max="15" value="5" oninput="main.setupOptions('shadowOffsetX', this.value)">
+                          </div>
+                          <div class="col-md-6">
+                              <label>Сдвиг тени по Y:</label>
+                              <input type="range" min="0" max="15" value="5" oninput="main.setupOptions('shadowOffsetY', this.value)">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
       <div class="container-fluid">
           <div class="row top-widgets">
               <form class="form-inline">
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                       <div class="form-group">
                           <label>Slot 1:</label>
                           <select class="form-control" id="slot1">
@@ -59,11 +114,13 @@
                               <option value="4">rect(free)</option>
                               <option value="5">ellipse(16:9)</option>
                               <option value="6">circle(free)</option>
+                              <option value="7">trapeze(free)</option>
                           </select>
                           <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" onClick="main.setToTop('slot1')"></span>
+                          <span class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#optionsModal" data-slotname="slot1"></span>
                       </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                       <div class="form-group">
                           <label>Slot 2:</label>
                           <select class="form-control" id="slot2">
@@ -74,11 +131,13 @@
                               <option value="4">rect(free)</option>
                               <option value="5">ellipse(16:9)</option>
                               <option value="6">circle(free)</option>
+                              <option value="7">trapeze(free)</option>
                           </select>
                           <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" onClick="main.setToTop('slot2')"></span>
+                          <span class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#optionsModal" data-slotname="slot2"></span>
                       </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                       <div class="form-group">
                           <label>Slot 3:</label>
                           <select class="form-control" id="slot3">
@@ -89,9 +148,23 @@
                               <option value="4">rect(free)</option>
                               <option value="5">ellipse(16:9)</option>
                               <option value="6">circle(free)</option>
+                              <option value="7">trapeze(free)</option>
                           </select>
                           <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" onClick="main.setToTop('slot3')"></span>
+                          <span class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#optionsModal" data-slotname="slot3"></span>
                       </div>
+                  </div>
+                  <div class="col-md-2">
+                      <div class="form-group">
+                          <label class="input-group-btn">
+                              <span class="btn btn-block btn-primary">
+                                  Browse Frame&hellip; <input type="file" id="input-file" style="display: none;">
+                              </span>
+                          </label>
+                      </div>
+                  </div>
+                  <div class="col-md-1">
+                      <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" onClick="main.setToTop('frame1')"></span>
                   </div>
               </form>
           </div>
@@ -120,7 +193,10 @@
 	      <a href="http://www.justbroadcaster.com">JustBroadcaster.com</a>
           </center>
       </div>
-      
+
+      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
       <script src="./js/konva.min.js"></script>
       <script src="./js/jszip.min.js"></script>
       <script src="./js/FileSaver.js"></script>

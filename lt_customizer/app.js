@@ -172,6 +172,44 @@
     
   });
 
+document.querySelector('#download2').addEventListener('click', function() {
+  var name = document.querySelector('#archive_name').value;
+  if(!name) return alert('Enter name of theme');
+
+  // создаем объект для сохранения свойст текстовых элементов
+  var textProps = {};
+  textProps.first = getTextProps(1);
+  textProps.second = getTextProps(2);
+  
+  
+  // получаем изображение с канваса
+  texts['1'].hide();
+  texts['2'].hide();
+  
+  stage.draw();
+
+  var imageData = stage.toDataURL({pixelRatio:1});
+
+  // создаем json файл
+  var data = {
+    'settings.json': JSON.stringify(textProps),
+    'background.png': imageData
+  };
+  var json = JSON.stringify(data);
+  var blob = new Blob([json], {type: "application/json"});
+  var url  = URL.createObjectURL(blob);
+
+  var link = document.createElement('a');
+  link.download = "lt_" + name + ".json";
+  link.href = url;
+  link.click();
+
+  texts['1'].show();
+  texts['2'].show();
+  
+  stage.draw();
+});
+
 function init(){
     applyTextProps(1);
     applyTextProps(2);
