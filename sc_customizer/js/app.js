@@ -20,12 +20,7 @@ var main = {
     var self = this;
 
     // проверяем если есть фигура с именем name и удаляем её
-    var figures = this.stage.find('.' + name);
-    if (figures.length) {
-      figures[0].getParent().destroy();
-      this.colors.unshift(figures[0].getAttr('fill'));
-      this.layer.draw();
-    }
+    this.removeFigure(name);
 
     var color = this.colors.shift();
     
@@ -507,6 +502,16 @@ var main = {
     this.actAnchors('show');
   }
 
+  , removeFigure: function(name) {
+    var figures = this.stage.find('.' + name);
+    if (figures.length) {
+      figures[0].getParent().destroy();
+      this.colors.unshift(figures[0].getAttr('fill'));
+      this.layer.draw();
+      delete this.slots[name]
+    }
+  }
+
   , init: function() {
     var self = this;
     
@@ -531,6 +536,8 @@ var main = {
           var shape = params[0];
           var dim = params[1];
           self.makeShape(this.id, shape, dim);
+        } else {
+          self.removeFigure(this.id)
         }
         //this.options[0].selected = true;
       });
