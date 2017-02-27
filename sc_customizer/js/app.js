@@ -556,10 +556,6 @@ var main = {
     document.querySelector('#show').addEventListener('click', function() {
       var bkg = self.layer.get('.background')[0];
       bkg.visible(true);
-      for (var slot_name in self.slots) {
-        var slot = self.slots[slot_name].slot;
-        slot.fillPriority('color');
-      }
       self.actAnchors('hide');
 
       var imageData = self.stage.toDataURL({pixelRatio: 1});
@@ -571,11 +567,6 @@ var main = {
       win.document.write(image.outerHTML);
       
       bkg.visible(false);
-      /*for (var slot_name in self.slots) {
-        var slot = self.slots[slot_name].slot;
-        slot.fillPriority('pattern');
-      }
-      self.actAnchors('show');*/
       self.returnFigures();
     });
 
