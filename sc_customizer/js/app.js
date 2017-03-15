@@ -464,16 +464,16 @@ var main = {
      * });*/
 
     var data = {
-      scene_example: imageData1,
-      scene_slots: imageData2,
-      scene: imageData3
+      'scene_example.png': imageData1,
+      'scene_slots.png': imageData2,
+      'scene.png': imageData3
     };
     var json = JSON.stringify(data);
     var blob = new Blob([json], {type: "application/json"});
     var url  = URL.createObjectURL(blob);
 
     var link = document.createElement('a');
-    link.download = "sc_" + name + ".json";
+    link.download = "SC-" + name + ".json";
     link.href = url;
     link.click();
 

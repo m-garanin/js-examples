@@ -200,7 +200,7 @@ document.querySelector('#download2').addEventListener('click', function() {
   var url  = URL.createObjectURL(blob);
 
   var link = document.createElement('a');
-  link.download = "lt_" + name + ".json";
+  link.download = "LT-" + name + ".json";
   link.href = url;
   link.click();
 

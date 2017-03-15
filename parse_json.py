@@ -8,10 +8,13 @@ def parse(fname):
     obj = json.loads( f.read())
     print obj.keys()
     for k, v in obj.items():
-        f = open(k+'.png', 'w')
-        v = v[22:]
-        byt = base64.decodestring(v)
-        f.write(byt)
+        f = open(k, 'w')
+        if k.endswith('.png'):
+            v = v[22:]
+            byt = base64.decodestring(v)
+            f.write(byt)
+        else:
+            f.write(v)
     
 
     

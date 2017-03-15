@@ -445,7 +445,7 @@ document.querySelector('#download2').addEventListener('click', function() {
   var url  = URL.createObjectURL(blob);
 
   var link = document.createElement('a');
-  link.download = "fbo_" + name + ".json";
+  link.download = "FB-" + name + ".json";
   link.href = url;
   link.click();
 
